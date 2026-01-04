@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Scrambler - Protect Your Images from AI Scraping</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      color: #000;
+      background: #000;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px;
+      color: white;
+      background: #FF6B35;
+      border: 4px solid #000;
+    }
+
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 3px 3px 0px rgba(0,0,0,0.8);
+    }
+
+    header p {
+      font-size: 1.3em;
+      opacity: 0.95;
+    }
+
+    .content {
+      background: white;
+      border: 4px solid #000;
+      padding: 50px;
+      margin-top: 30px;
+      box-shadow: 12px 12px 0px rgba(0,0,0,1);
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section h2 {
+      color: #FF6B35;
+      font-size: 2em;
+      margin-bottom: 20px;
+      border-bottom: 4px solid #000;
+      padding-bottom: 10px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 30px;
+      border: 3px solid #000;
+      text-align: center;
+      transition: all 0.3s;
+      box-shadow: 6px 6px 0px rgba(0,0,0,1);
+    }
+
+    .feature-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0px rgba(0,0,0,1);
+      border-color: #FF6B35;
+    }
+
+    .feature-icon {
+      font-size: 3em;
+      margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+      color: #FF6B35;
+      margin-bottom: 10px;
+      font-size: 1.3em;
+    }
+
+    .steps {
+      counter-reset: step-counter;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step-counter;
+      margin-bottom: 30px;
+      padding-left: 60px;
+      position: relative;
+    }
+
+    .steps li::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;#FF6B35;
+      color: white;
+      border: 3px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .steps li strong {
+      color: #FF6B35;
+      display: block;
+      margin-bottom: 5px;
+      font-size: 1.1em;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #FF6B35;
+      color: white;
+      padding: 15px 40px;
+      border: 3px solid #000;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-top: 20px;
+      transition: all 0.3s;
+      box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
+    }
+
+    .cta-button:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0px rgba(0, 0, 0, 1);
+      background: #FF8C35
+    .cta-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    .highlight-box FFF5F0;
+      border: 3px solid #FF6B35;
+      border-left: 8px solid #FF6B35;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    code {
+      background: #000;
+      color: #FF6B35;
+      padding: 3px 8px;
+      border: 1px solid #000;
+      font-family: 'Courier New', monospace;
+    }
+
+    .demo-section {
+      text-align: center;
+      padding: 30px;
+      background: #000;
+      color: white;
+      border: 3px solid #FF6B35gradient(135deg, #667eea10 0%, #764ba210 100%);
+      border-radius: 15px;
+      margin-top: 30px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: white;
+      margin-top: 50px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2em;
+      }
+      
+      .content {
+        padding: 30px 20px;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔒 Image Scrambler</h1>
+      <p>Protect Your Images from AI Scraping with Smart Face Detection</p>
+    </header>
+
+    <div class="content">
+      <!-- What is it -->
+      <div class="section">
+        <h2>🎯 What Is Image Scrambler?</h2>
+        <p>Image Scrambler is a powerful browser extension that protects your images from unauthorized AI training and web scraping. It intelligently scrambles images (especially faces) making them unusable for AI models, while allowing legitimate users to automatically view the original content.</p>
+        
+        <div class="highlight-box">
+          <strong>🤖 Smart Face Detection:</strong> Automatically detects faces in images and scrambles only the face region, leaving the rest of the image untouched. If no face is detected, it scrambles the entire image as a fallback.
+        </div>
+      </div>
+
+      <!-- Why Use It -->
+      <div class="section">
+        <h2>✨ Why Use Image Scrambler?</h2>
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>AI Scraping Protection</h3>
+            <p>Prevents unauthorized AI models from using your images for training</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">👤</div>
+            <h3>Face Detection</h3>
+            <p>Smart API-based face detection scrambles only faces, preserving image context</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🔓</div>
+            <h3>Auto Unscramble</h3>
+            <p>Automatically detects and unscrambles protected images on any website</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🔑</div>
+            <h3>No Passwords</h3>
+            <p>Keyless encryption - no passwords or keys needed to unscramble</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Fast & Easy</h3>
+            <p>One-click scrambling and automatic unscrambling in browser</p>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>Works Everywhere</h3>
+            <p>Browser extension works on all websites automatically</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Install -->
+      <div class="section">
+        <h2>📦 How to Install the Extension</h2>
+        <ol class="steps">
+          <li>
+            <strong>Download the Extension</strong>
+            Download or clone the extension files from the repository to your computer.
+          </li>
+          
+          <li>
+            <strong>Open Chrome Extensions</strong>
+            Open Google Chrome and navigate to <code>chrome://extensions/</code>
+          </li>
+          
+          <li>
+            <strong>Enable Developer Mode</strong>
+            Toggle the "Developer mode" switch in the top-right corner.
+          </li>
+          
+          <li>
+            <strong>Load Extension</strong>
+            Click "Load unpacked" button and select the <code>extension</code> folder from the downloaded files.
+          </li>
+          
+          <li>
+            <strong>Start Using!</strong>
+            Click the extension icon in your browser toolbar to start scrambling images.
+          </li>
+        </ol>
+      </div>
+
+      <!-- How to Use -->
+      <div class="section">
+        <h2>🚀 How to Use</h2>
+        
+        <h3 style="color: #FF6B35; margin-top: 30px;">Scrambling Images:</h3>
+        <ol class="steps">
+          <li>
+            <strong>Click Extension Icon</strong>
+            Click the Image Scrambler icon in your browser toolbar.
+          </li>
+          
+          <li>
+            <strong>Upload Image</strong>
+            Click "Choose File" or drag-and-drop an image into the extension popup.
+          </li>
+          
+          <li>
+            <strong>Scramble</strong>
+            Click "Scramble Image" button. The extension will:
+            <ul style="margin-top: 10px; margin-left: 20px;">
+              <li>Try to detect faces using AI (API-based)</li>
+              <li>If face found → scramble only the face region</li>
+              <li>If no face → scramble entire image</li>
+            </ul>
+          </li>
+          
+          <li>
+            <strong>Download</strong>
+            Download the scrambled image and share it anywhere!
+          </li>
+        </ol>
+
+        <h3 style="color: #FF6B35; margin-top: 40px;">Viewing Scrambled Images:</h3>
+        <p style="margin-top: 15px;">The extension automatically detects and unscrambles protected images on any website you visit. No action needed!</p>
+        
+        <div class="highlight-box" style="margin-top: 20px;">
+          <strong>✅ Automatic Protection:</strong> Once installed, the extension runs in the background and automatically unscrambles any protected images you encounter while browsing.
+        </div>
+      </div>
+
+      <!-- Demo Section -->
+      <div class="demo-sectFF6B35
+        <h2 style="color: #667eea; margin-bottom: 20px;">🎨 Try the Web Demo</h2>
+        <p>Want to test scrambling and unscrambling without installing the extension?</p>
+        <a href="index.html" class="cta-button">Open Web Demo</a>
+      </div>
+
+      <!-- Technical Details -->
+      <div class="section">
+        <h2>⚙️ How It Works</h2>
+        <p><strong>Scrambling Process:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>✅ Face detection API analyzes the image</li>
+          <li>✅ If face detected: extracts face bounding box region</li>
+          <li>✅ Divides region into 8×8 pixel tiles</li>
+          <li>✅ Randomly shuffles tiles using cryptographic PRNG</li>
+          <li>✅ Embeds detection marker and seed in image</li>
+          <li>✅ If no face: scrambles entire image as fallback</li>
+        </ul>
+
+        <p style="margin-top: 20px;"><strong>Unscrambling Process:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>✅ Automatically detects scrambled images on webpages</li>
+          <li>✅ Extracts embedded seed from marker column</li>
+          <li>✅ Reverses tile shuffle using same PRNG algorithm</li>
+          <li>✅ Verifies correctness with embedded validation data</li>
+          <li>✅ Displays original image seamlessly</li>
+        </ul>
+      </div>
+
+      <!-- Requirements -->
+      <div class="section">
+        <h2>💻 Requirements</h2>
+        <ul style="margin-left: 20px;">
+          <li>Google Chrome or Chromium-based browser (Edge, Brave, etc.)</li>
+          <li>Internet connection (for face detection API)</li>
+          <li>No additional software or dependencies needed</li>
+        </ul>
+      </div>
+
+      <!-- Get Started -->
+      <div class="section" style="text-align: center; margin-top: 50px;">
+        <h2>Ready to Protect Your Images?</h2>
+        <p style="margin: 20px 0;">Install the extension now and start scrambling images with smart face detection!</p>
+        <a href="#" class="cta-button">Get Started</a>
+      </div>
+    </div>
+
+    <footer>
+      <p>Image Scrambler - Protecting your images from AI scraping with intelligent face detection</p>
+      <p style="margin-top: 10px; opacity: 0.8;">Open Source • Privacy Focused • No Data Collection</p>
+    </footer>
+  </div>
+</body>
+</html>
