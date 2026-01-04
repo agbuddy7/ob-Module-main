@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .scrambled-image {
+            max-width: 100%;
+            border: 2px solid #ff6b6b;
+            margin: 10px 0;
+        }
+        .instructions {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        #console-output {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔒 Image Scrambler Extension Test Page</h1>
+    
+    <div class="instructions">
+        <h3>How to Test:</h3>
+        <ol>
+            <li><strong>Install the extension</strong> from the extension folder</li>
+            <li><strong>Enable file URL access:</strong>
+                <ul>
+                    <li>Go to chrome://extensions/</li>
+                    <li>Find "Image Scrambler"</li>
+                    <li>Click "Details"</li>
+                    <li>Turn ON "Allow access to file URLs"</li>
+                </ul>
+            </li>
+            <li><strong>Create a scrambled image</strong> using the button below</li>
+            <li><strong>Open browser console</strong> (F12) to see extension logs</li>
+            <li><strong>Look for 🔒 messages</strong> in console to see what the extension is doing</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 1: Create Test Image</h2>
+        <button onclick="createAndScrambleImage()">Create Scrambled Test Image</button>
+        <div id="test-image-area"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 2: Check Extension Activity</h2>
+        <p>Open the browser console (F12) and look for messages starting with 🔒</p>
+        <p><strong>Expected behavior:</strong> The extension should detect the scrambled image and automatically unscramble it.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>Step 3: Upload Your Scrambled Image</h2>
+        <input type="file" id="file-input" accept="image/*" onchange="loadUserImage(event)">
+        <div id="user-image-area"></div>
+    </div>
+
+    <script src="./core/prng.js"></script>
+    <script src="./core/canvas-utils.js"></script>
+    <script src="./core/scrambler.js"></script>
+    <script>
+        // Override console.log to also display in our output area
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+        };
+
+        async function createAndScrambleImage() {
+            console.log('Creating test scrambled image...');
+            
+            // Create test canvas
+            const testCanvas = document.createElement('canvas');
+            testCanvas.width = 400;
+            testCanvas.height = 400;
+            const ctx = testCanvas.getContext('2d');
+
+            // Create colorful pattern
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    const tileSize = 50;
+                    const hue = (x + y * 8) * 360 / 64;
+                    ctx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+                    ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                    
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(x + y * 8, x * tileSize + tileSize/2, y * tileSize + tileSize/2);
+                }
+            }
+
+            // Scramble it
+            const scrambled = await scrambleImage(testCanvas);
+            
+            // Create image element and add to page
+            const img = document.createElement('img');
+            img.src = scrambled.canvas.toDataURL();
+            img.className = 'scrambled-image';
+            img.style.border = '3px solid red';
+            
+            const area = document.getElementById('test-image-area');
+            area.innerHTML = '<h3>Scrambled Image (Extension should detect and unscramble this):</h3>';
+            area.appendChild(img);
+            
+            console.log(`Scrambled image created with seed: ${scrambled.seed}`);
+            console.log('Watch for 🔒 extension messages in console...');
+        }
+
+        function loadUserImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'scrambled-image';
+                    img.style.maxWidth = '500px';
+                    
+                    const area = document.getElementById('user-image-area');
+                    area.innerHTML = '<h3>Your Scrambled Image:</h3>';
+                    area.appendChild(img);
+                    
+                    console.log('User image loaded. Watch for 🔒 extension messages...');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>

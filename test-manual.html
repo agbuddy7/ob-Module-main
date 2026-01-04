@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Scrambler - Manual Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #667eea;
+    }
+    .section {
+      margin: 30px 0;
+      padding: 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin: 10px;
+    }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    .info {
+      background: #f8f9ff;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔒 Image Scrambler - Manual Test</h1>
+
+  <div class="section">
+    <h2>1. Create Test Image</h2>
+    <button onclick="createTestImage()">Create 400×400 Test Image</button>
+    <div>
+      <canvas id="testImage"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>2. Scramble</h2>
+    <button onclick="scrambleTest()">Scramble Image</button>
+    <div class="info" id="scrambleInfo"></div>
+    <div>
+      <canvas id="scrambledImage"></canvas>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>3. Detect</h2>
+    <button onclick="detectTest()">Detect Scrambled Image</button>
+    <div class="info" id="detectInfo"></div>
+  </div>
+
+  <div class="section">
+    <h2>4. Unscramble</h2>
+    <button onclick="unscrambleTest()">Unscramble Image</button>
+    <div class="info" id="unscrambleInfo"></div>
+    <div>
+      <canvas id="unscrambledImage"></canvas>
+    </div>
+  </div>
+
+  <script src="./core/prng.js"></script>
+  <script src="./core/canvas-utils.js"></script>
+  <script src="./core/scrambler.js"></script>
+  <script src="./core/detector.js"></script>
+  <script src="./core/unscrambler.js"></script>
+  <script>
+    let testCanvas = null;
+    let scrambledCanvas = null;
+
+    window.createTestImage = function() {
+      const canvas = document.getElementById('testImage');
+      canvas.width = 400;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+
+      // Create a colorful test pattern
+      for (let y = 0; y < 8; y++) {
+        for (let x = 0; x < 8; x++) {
+          const tileSize = 50;
+          const hue = (x + y * 8) * 360 / 64;
+          ctx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+          ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+          
+          // Add number to each tile
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 20px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(x + y * 8, x * tileSize + tileSize/2, y * tileSize + tileSize/2);
+        }
+      }
+
+      testCanvas = canvas;
+      document.getElementById('scrambleInfo').innerHTML = '<strong>✅ Test image created!</strong>';
+    };
+
+    window.scrambleTest = async function() {
+      if (!testCanvas) {
+        alert('Please create a test image first');
+        return;
+      }
+
+      try {
+        const result = await scrambleImage(testCanvas);
+        
+        const canvas = document.getElementById('scrambledImage');
+        canvas.width = result.canvas.width;
+        canvas.height = result.canvas.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(result.canvas, 0, 0);
+
+        scrambledCanvas = result.canvas;
+
+        document.getElementById('scrambleInfo').innerHTML = `
+          <strong>✅ Image scrambled!</strong><br>
+          Column Position: ${result.columnPosition}<br>
+          Negative Position: ${result.negativePosition}<br>
+          Seed: ${result.seed}<br>
+          Dimensions: ${result.canvas.width}×${result.canvas.height} (9×8 tiles)
+        `;
+      } catch (error) {
+        document.getElementById('scrambleInfo').innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
+      }
+    };
+
+    window.detectTest = async function() {
+      if (!scrambledCanvas) {
+        alert('Please scramble an image first');
+        return;
+      }
+
+      try {
+        const result = await detectScrambledImage(scrambledCanvas);
+        
+        if (result.detected) {
+          document.getElementById('detectInfo').innerHTML = `
+            <strong>✅ Scrambled image detected!</strong><br>
+            Column Position: ${result.columnPosition}<br>
+            Negative Position: ${result.negativePosition}<br>
+            Seed: ${result.seed}<br>
+            Tile Size: ${result.tileWidth}×${result.tileHeight}
+          `;
+        } else {
+          document.getElementById('detectInfo').innerHTML = '<strong>❌ Not detected as scrambled image</strong>';
+        }
+      } catch (error) {
+        document.getElementById('detectInfo').innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
+      }
+    };
+
+    window.unscrambleTest = async function() {
+      if (!scrambledCanvas) {
+        alert('Please scramble an image first');
+        return;
+      }
+
+      try {
+        const result = await unscrambleImage(scrambledCanvas);
+        
+        const canvas = document.getElementById('unscrambledImage');
+        canvas.width = result.canvas.width;
+        canvas.height = result.canvas.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(result.canvas, 0, 0);
+
+        document.getElementById('unscrambleInfo').innerHTML = `
+          <strong>✅ Image unscrambled!</strong><br>
+          Seed: ${result.seed}<br>
+          Verified: ${result.verified ? '✅ Yes' : '❌ No'}<br>
+          Dimensions: ${result.canvas.width}×${result.canvas.height}
+        `;
+      } catch (error) {
+        document.getElementById('unscrambleInfo').innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
+      }
+    };
+  </script>
+</body>
+</html>

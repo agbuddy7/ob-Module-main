@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Scrambler - Options</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #777;
+      margin-bottom: 30px;
+    }
+
+    .option-group {
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .option-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 15px;
+      border-radius: 8px;
+      transition: background 0.3s ease;
+    }
+
+    .option-label:hover {
+      background: #f8f9ff;
+    }
+
+    .option-label input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 15px;
+      cursor: pointer;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .option-text h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #333;
+    }
+
+    .option-text p {
+      font-size: 14px;
+      color: #777;
+    }
+
+    .save-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .status-message {
+      text-align: center;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚙️ Options</h1>
+    <p class="subtitle">Configure Image Scrambler settings</p>
+
+    <div class="option-group">
+      <label class="option-label">
+        <input type="checkbox" id="autoUnscramble" checked>
+        <div class="option-text">
+          <h3>Auto-unscramble images</h3>
+          <p>Automatically detect and unscramble images when browsing</p>
+        </div>
+      </label>
+    </div>
+
+    <div class="option-group">
+      <label class="option-label">
+        <input type="checkbox" id="showBadges" checked>
+        <div class="option-text">
+          <h3>Show unscramble badges</h3>
+          <p>Display visual indicator on unscrambled images</p>
+        </div>
+      </label>
+    </div>
+
+    <button class="save-btn" id="saveBtn">Save Settings</button>
+    <div class="status-message" id="statusMessage">Settings saved successfully!</div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+/**
+ * Content script styles for unscrambled image badges
+ */
+
+.image-scrambler-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.image-scrambler-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(102, 126, 234, 0.95);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  cursor: help;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.image-scrambler-badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Scrambler - Web Tool</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Ob-Module</h1>
+      <p class="subtitle">Protect your images from AI scraping</p>
+    </header>
+
+    <main>
+      <div class="tabs">
+        <button class="tab active" data-tab="scramble">Scramble</button>
+        <button class="tab" data-tab="unscramble">Unscramble</button>
+      </div>
+
+      <!-- Scramble Tab -->
+      <div class="tab-content" id="scramble-tab">
+        <div class="upload-section">
+          <div class="file-input-wrapper">
+            <input type="file" id="scrambleFileInput" accept="image/*" hidden>
+            <label for="scrambleFileInput" class="file-input-label">
+              <span class="upload-icon">📁</span>
+              <span class="upload-text">Click or drag image here to scramble</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="preview-section" id="scramblePreview" style="display: none;">
+          <div class="preview-grid">
+            <div class="preview-item">
+              <h3>Original Image</h3>
+              <div class="preview-container">
+                <canvas id="originalCanvas"></canvas>
+              </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="preview-item">
+              <h3>Scrambled Image</h3>
+              <div class="preview-container">
+                <canvas id="scrambledCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section" id="scrambleInfo" style="display: none;">
+            <h4>Encoding Information</h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Column Position:</span>
+                <span class="info-value" id="scrambleColumnPos">-</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Negative Position:</span>
+                <span class="info-value" id="scrambleNegativePos">-</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Seed:</span>
+                <span class="info-value" id="scrambleSeed">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button id="scrambleBtn" class="btn btn-primary">
+              <span class="btn-icon">🔀</span>
+              Scramble Image
+            </button>
+            <button id="downloadScrambledBtn" class="btn btn-secondary" style="display: none;">
+              <span class="btn-icon">⬇️</span>
+              Download Scrambled
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unscramble Tab -->
+      <div class="tab-content" id="unscramble-tab" style="display: none;">
+        <div class="upload-section">
+          <div class="file-input-wrapper">
+            <input type="file" id="unscrambleFileInput" accept="image/*" hidden>
+            <label for="unscrambleFileInput" class="file-input-label">
+              <span class="upload-icon">📁</span>
+              <span class="upload-text">Click or drag scrambled image here</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="preview-section" id="unscramblePreview" style="display: none;">
+          <div class="preview-grid">
+            <div class="preview-item">
+              <h3>Scrambled Image</h3>
+              <div class="preview-container">
+                <canvas id="scrambledInputCanvas"></canvas>
+              </div>
+            </div>
+            <div class="arrow">→</div>
+            <div class="preview-item">
+              <h3>Unscrambled Image</h3>
+              <div class="preview-container">
+                <canvas id="unscrambledCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-section" id="unscrambleInfo" style="display: none;">
+            <h4>Detection Information</h4>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Detected:</span>
+                <span class="info-value" id="detected">-</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Seed:</span>
+                <span class="info-value" id="unscrambleSeed">-</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Verified:</span>
+                <span class="info-value" id="verified">-</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons">
+            <button id="unscrambleBtn" class="btn btn-primary">
+              <span class="btn-icon">🔓</span>
+              Unscramble Image
+            </button>
+            <button id="downloadUnscrambledBtn" class="btn btn-secondary" style="display: none;">
+              <span class="btn-icon">⬇️</span>
+              Download Unscrambled
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h3>How It Works</h3>
+        <p>
+          <strong>Scrambling:</strong> Divides your image into 64 tiles (8×8 grid), 
+          shuffles them deterministically, and adds a marker column with encoding information.
+        </p>
+        <p>
+          <strong>Unscrambling:</strong> Automatically detects the marker column, 
+          extracts the seed, and reconstructs the original image. No keys needed!
+        </p>
+        <p class="note">
+          <strong>Note:</strong> This is visual obfuscation, not encryption. 
+          It increases the cost of bulk AI scraping but won't stop determined attackers.
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <p>Image Scrambler v1.0.0 | Open Source</p>
+    </footer>
+  </div>
+
+  <script src="../core/prng.js"></script>
+  <script src="../core/canvas-utils.js"></script>
+  <script src="../core/scrambler.js"></script>
+  <script src="../core/detector.js"></script>
+  <script src="../core/unscrambler.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Scrambler</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔒 Image Scrambler</h1>
+      <p class="subtitle">Protect your images from AI scraping</p>
+    </header>
+
+    <main>
+      <div class="upload-section">
+        <div class="file-input-wrapper">
+          <input type="file" id="fileInput" accept="image/*" hidden>
+          <label for="fileInput" class="file-input-label">
+            <span class="upload-icon">📁</span>
+            <span class="upload-text">Click or drag image here</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="preview-section" id="previewSection" style="display: none;">
+        <div class="preview-grid">
+          <div class="preview-item">
+            <h3>Original</h3>
+            <div class="preview-container">
+              <canvas id="originalCanvas"></canvas>
+            </div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="preview-item">
+            <h3>Scrambled</h3>
+            <div class="preview-container">
+              <canvas id="scrambledCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section" id="infoSection" style="display: none;">
+          <h4>Encoding Information</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Column Position:</span>
+              <span class="info-value" id="columnPos">-</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Negative Position:</span>
+              <span class="info-value" id="negativePos">-</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Seed:</span>
+              <span class="info-value" id="seed">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="scrambleBtn" class="btn btn-primary">
+            <span class="btn-icon">🔀</span>
+            Scramble Image
+          </button>
+          <button id="downloadBtn" class="btn btn-secondary" style="display: none;">
+            <span class="btn-icon">⬇️</span>
+            Download Scrambled
+          </button>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <p class="info-text">
+          <strong>How it works:</strong> This tool divides your image into 64 tiles, 
+          shuffles them deterministically, and adds a marker column for automatic unscrambling. 
+          No keys needed - the scrambled image is self-contained.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <script src="../core/prng.js"></script>
+  <script src="../core/canvas-utils.js"></script>
+  <script src="../core/scrambler.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

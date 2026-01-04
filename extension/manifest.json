@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Image Scrambler",
+  "version": "1.0.0",
+  "description": "Scrambles images to increase the cost of AI scraping with keyless self-contained detection",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "core/prng.js",
+        "core/canvas-utils.js",
+        "core/scrambler.js",
+        "core/detector.js",
+        "core/unscrambler.js",
+        "content/content.js"
+      ],
+      "css": ["content/content.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "options_page": "options/options.html"
+}

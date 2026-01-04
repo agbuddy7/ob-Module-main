@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face Detection API Tester</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      opacity: 0.9;
+      font-size: 0.95em;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .section h2 {
+      font-size: 1.3em;
+      color: #333;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #555;
+      font-size: 0.95em;
+    }
+
+    input[type="file"],
+    input[type="text"],
+    select {
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95em;
+      transition: all 0.3s;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .output-box {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85em;
+      line-height: 1.5;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .canvas-container {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 100%;
+      display: none;
+    }
+
+    canvas {
+      max-width: 100%;
+      display: block;
+    }
+
+    .grid-full {
+      grid-column: 1 / -1;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .button-group button {
+      flex: 1;
+    }
+
+    .info-box {
+      background: #e7f3ff;
+      border-left: 4px solid #667eea;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #004085;
+    }
+
+    .json-pretty {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🔍 Face Detection API Tester</h1>
+      <p class="subtitle">Debug and test the face detection API endpoint</p>
+    </header>
+
+    <div class="content">
+      <!-- LEFT SIDE: INPUT -->
+      <div class="section">
+        <h2>📤 Upload & Configure</h2>
+
+        <div class="input-group">
+          <label for="apiUrl">API Endpoint</label>
+          <input 
+            type="text" 
+            id="apiUrl" 
+            value="https://face-detection-test-1.onrender.com/detect-face"
+            placeholder="Enter API URL"
+          >
+        </div>
+
+        <div class="input-group">
+          <label for="imageInput">Select Image</label>
+          <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <div class="info-box">
+          ℹ️ The API expects FormData with a 'file' field containing the image blob.
+        </div>
+
+        <div class="button-group">
+          <button id="testBtn" onclick="testAPI()">🚀 Test API</button>
+          <button id="clearBtn" onclick="clearResults()">🗑️ Clear</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+      </div>
+
+      <!-- RIGHT SIDE: OUTPUT -->
+      <div class="section">
+        <h2>📊 Response Data</h2>
+        <div id="jsonOutput" class="output-box">
+          <p style="color: #999;">Response will appear here...</p>
+        </div>
+      </div>
+
+      <!-- FULL WIDTH: CANVAS -->
+      <div class="section grid-full">
+        <h2>🎨 Visualization</h2>
+        <div class="canvas-container" id="canvasContainer">
+          <canvas id="canvas"></canvas>
+        </div>
+        <p id="canvasInfo" style="color: #666; font-size: 0.9em;"></p>
+      </div>
+
+      <!-- DEBUG INFO -->
+      <div class="section grid-full">
+        <h2>🐛 Debug Information</h2>
+        <div id="debugOutput" class="output-box">
+          <p style="color: #999;">Debug info will appear here...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const apiUrlInput = document.getElementById('apiUrl');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const jsonOutput = document.getElementById('jsonOutput');
+    const debugOutput = document.getElementById('debugOutput');
+    const status = document.getElementById('status');
+    const canvasContainer = document.getElementById('canvasContainer');
+    const canvasInfo = document.getElementById('canvasInfo');
+    const testBtn = document.getElementById('testBtn');
+
+    function log(message, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const line = `[${timestamp}] ${message}`;
+      console.log(line);
+      debugOutput.innerHTML += line + '\n';
+      debugOutput.scrollTop = debugOutput.scrollHeight;
+    }
+
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = `status ${type}`;
+      status.style.display = 'block';
+    }
+
+    async function testAPI() {
+      const file = imageInput.files[0];
+
+      if (!file) {
+        alert('Please select an image first.');
+        return;
+      }
+
+      const apiUrl = apiUrlInput.value.trim();
+      if (!apiUrl) {
+        alert('Please enter an API endpoint.');
+        return;
+      }
+
+      testBtn.disabled = true;
+      debugOutput.innerHTML = '';
+      log('Starting API test...');
+      log(`API URL: ${apiUrl}`);
+      log(`File: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+
+      showStatus('🔄 Sending request...', 'loading');
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        log('FormData created with file field');
+        log('Sending POST request...');
+
+        const startTime = performance.now();
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          body: formData
+        });
+        const endTime = performance.now();
+
+        log(`Response received in ${(endTime - startTime).toFixed(2)}ms`);
+        log(`Status: ${response.status} ${response.statusText}`);
+        log(`Content-Type: ${response.headers.get('content-type')}`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        log('JSON parsed successfully');
+
+        jsonOutput.innerHTML = `<div class="json-pretty">${JSON.stringify(data, null, 2)}</div>`;
+        
+        log(`Image dimensions: ${data.imageWidth} x ${data.imageHeight}`);
+        log(`Faces detected: ${data.faces ? data.faces.length : 0}`);
+
+        if (data.faces && data.faces.length > 0) {
+          data.faces.forEach((face, index) => {
+            const [x, y, w, h] = face.bbox;
+            log(`Face ${index + 1}: bbox=[${x.toFixed(3)}, ${y.toFixed(3)}, ${w.toFixed(3)}, ${h.toFixed(3)}]`);
+            if (face.landmarks) {
+              log(`  Landmarks: ${Object.keys(face.landmarks).join(', ')}`);
+            }
+          });
+        }
+
+        drawImageWithFaces(file, data);
+        showStatus('✅ Success! API working correctly.', 'success');
+
+      } catch (error) {
+        log(`ERROR: ${error.message}`, 'error');
+        jsonOutput.innerHTML = `<div style="color: #d32f2f;"><strong>Error:</strong> ${error.message}</div>`;
+        showStatus(`❌ Error: ${error.message}`, 'error');
+      } finally {
+        testBtn.disabled = false;
+      }
+    }
+
+    function drawImageWithFaces(file, data) {
+      const img = new Image();
+
+      img.onload = () => {
+        log(`Image loaded: ${img.width} x ${img.height}`);
+        
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+
+        log('Drawing bounding boxes and landmarks...');
+        let boxCount = 0;
+        let landmarkCount = 0;
+
+        data.faces.forEach((face, index) => {
+          drawBoundingBox(face.bbox, img.width, img.height, index);
+          boxCount++;
+          
+          if (face.landmarks) {
+            drawLandmarks(face.landmarks, img.width, img.height);
+            landmarkCount += Object.keys(face.landmarks).length;
+          }
+        });
+
+        log(`Drawn ${boxCount} bounding box(es) and ${landmarkCount} landmark(s)`);
+        canvasContainer.style.display = 'block';
+        canvasInfo.textContent = `Canvas: ${canvas.width}x${canvas.height} | Faces: ${data.faces.length}`;
+      };
+
+      img.onerror = () => {
+        log('ERROR: Failed to load image for visualization');
+      };
+
+      img.src = URL.createObjectURL(file);
+    }
+
+    function drawBoundingBox(bbox, imgW, imgH, index) {
+      const [x, y, w, h] = bbox;
+      const px = x * imgW;
+      const py = y * imgH;
+      const pw = w * imgW;
+      const ph = h * imgH;
+
+      ctx.strokeStyle = '#ff5252';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(px, py, pw, ph);
+
+      // Label
+      ctx.fillStyle = '#ff5252';
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText(`Face ${index + 1}`, px + 5, py - 5);
+    }
+
+    function drawLandmarks(landmarks, imgW, imgH) {
+      ctx.fillStyle = '#00e5ff';
+
+      for (const key in landmarks) {
+        const [x, y] = landmarks[key];
+        ctx.beginPath();
+        ctx.arc(x * imgW, y * imgH, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function clearResults() {
+      jsonOutput.innerHTML = '<p style="color: #999;">Response will appear here...</p>';
+      debugOutput.innerHTML = '<p style="color: #999;">Debug info will appear here...</p>';
+      canvasContainer.style.display = 'none';
+      status.style.display = 'none';
+      imageInput.value = '';
+      log('Cleared all results');
+    }
+
+    log('Face Detection API Tester loaded');
+    log('Ready to test. Select an image and click "Test API"');
+  </script>
+</body>
+</html>
